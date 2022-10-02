@@ -30,15 +30,20 @@ def hello():
 	except:
 		return {'data': 'An Error Occurred during fetching Api'}
 
+def username_to_addy(name):
+	return requests.get("https://searchcaster.xyz/api/profiles?username="+name)
+
 def path_to_image_html(path):
     return '<img src="'+ path + '" width="60" >'
 
 @app.route('/mutuals/<user1>/<user2>')
 def mutuals(user1, user2):
 		# return followers of user1 followed by user2
-	df1 = get_followers(user1)
+	user1name = username_to_addy(user1).json()[0]['body']['address']
+	user2name = username_to_addy(user2).json()[0]['body']['address']
+	df1 = get_followers(user1name)
 	print(user2)
-	df2 = get_following(user2)
+	df2 = get_following(user2name)
 	print(df1)
 	print(df2)
 	moots = list(set(df1.username).intersection(set(df2.username)))
@@ -52,8 +57,10 @@ def mutuals(user1, user2):
 @app.route('/intros/<user1>/<user2>')
 def intros(user1,user2):
 	# return followers of user1 followed by user2
-	df1 = get_following(user1)
-	df2 = get_followers(user2)
+	user1name = username_to_addy(user1).json()[0]['body']['address']
+	user2name = username_to_addy(user2).json()[0]['body']['address']
+	df1 = get_following(user1name)
+	df2 = get_followers(user2name)
 	moots = set(df1.username).intersection(set(df2.username))
 	resultsdf = df1[df1['username'].isin(moots)]
 	resultsdf['image'] = [path_to_image_html(i) for i in resultsdf['avatar.url']] 
@@ -64,6 +71,8 @@ def intros(user1,user2):
 @app.route('/commonfollowing/<user1>/<user2>')
 def get(user1,user2):
 	# return followers of user1 followed by user2
+	user1name = username_to_addy(user1).json()[0]['body']['address']
+	user2name = username_to_addy(user2).json()[0]['body']['address']
 	df1 = get_following(user1)
 	df2 = get_following(user2)
 	moots = set(df1.username).intersection(set(df2.username))
