@@ -129,8 +129,8 @@ def get(user1,user2):
 	# return followers of user1 followed by user2
 	user1name = username_to_addy(user1).json()[0]['body']['address']
 	user2name = username_to_addy(user2).json()[0]['body']['address']
-	df1 = get_following(user1)
-	df2 = get_following(user2)
+	df1 = get_following(user1name)
+	df2 = get_following(user2name)
 	moots = set(df1.username).intersection(set(df2.username))
 	resultsdf = df1[df1['username'].isin(moots)]
 	resultsdf['image'] = [path_to_image_html(i) for i in resultsdf['avatar.url']] 
