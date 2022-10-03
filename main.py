@@ -41,6 +41,10 @@ def get_following(farcaster_address):
 	response=response.json()
 	return pd.json_normalize(response)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 @app.route('/',methods=("GET","POST"))
 def hello():
 	form = MutualForm()

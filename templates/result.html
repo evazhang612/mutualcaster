@@ -16,11 +16,23 @@ Mutuals for 2 farcaster users
 
 {% block content %}
 
+
+
 <div class="container">
+  <div class="header-flex">
+  <img src = "https://searchcaster.xyz/_next/image?url=%2Fimg%2Flogo.png&w=48&q=75">
+   <h1>Farcaster Mutuals</h1>
+ </div>
+
+<form action="/" method="get">
+    <input type="submit" value="Home" 
+         name="Home" id="frm1_submit" />
+</form>
+
+
+
   <div class="row">
     <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
-
-      <h1 class="pt-5 pb-2">Mutuals for farcaster</h1>
 
       {{nmutuals | safe }} Mutuals
       {{tables | safe}}

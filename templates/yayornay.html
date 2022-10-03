@@ -16,16 +16,23 @@ Mutuals for 2 farcaster users
 
 {% block content %}
 
+
+<form action="/" method="get">
+    <input type="submit" value="Home" 
+         name="Home" id="frm1_submit" />
+</form>
+
 <div class="container">
+<img src = "https://searchcaster.xyz/_next/image?url=%2Fimg%2Flogo.png&w=48&q=75"><h1>Farcaster Mutuals</h1></div>
   <div class="row">
-    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
 
-      <h1 class="pt-5 pb-2">Ya or no?</h1>
-
+<!--       <h1 class="pt-5 pb-2">Ya or no?</h1>
+      <img src="https://searchcaster.xyz/_next/image?url=%2Fimg%2Flogo.png&w=48&q=75">
+ -->
+ <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
       <p class="pt-5"><strong> {{result | safe }}</strong></p>
     </div>
   </div>
-</div>
 
 {% endblock %}
 
