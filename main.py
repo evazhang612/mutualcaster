@@ -125,7 +125,7 @@ def intros(user1,user2):
 				nmutuals = resultsdf.shape[0]) 
 
 @app.route('/commonfollowing/<user1>/<user2>')
-def get(user1,user2):
+def commonfollowing(user1,user2):
 	# return followers of user1 followed by user2
 	user1name = username_to_addy(user1).json()[0]['body']['address']
 	user2name = username_to_addy(user2).json()[0]['body']['address']
