@@ -22,15 +22,29 @@ OPTIONS = ['imfeelinglucky', 'mutuals','intros','commonfollowing',\
 			 'aremutuals', 'isfollowing', 'peopletofollow']
 
 class MutualForm(FlaskForm):
-    name1 = StringField('User 1?', validators=[DataRequired()])
-    name2 = StringField('User 2?', validators=[])
-    option = SelectField(label='Option', 
-    			choices = OPTIONS, 
-    			validators = [DataRequired()]) 
-    submit = SubmitField('Submit')
+	name1 = StringField('User 1?', validators=[DataRequired()])
+	name2 = StringField('User 2?', validators=[])
+	option = SelectField(label='Option', 
+				choices = OPTIONS, 
+				validators = [DataRequired()]) 
+	submit = SubmitField('Submit')
 
 # terrible style done in like 15 mins please excuse this
 # todo: comments and like everything else beyond
+
+def collapse(mutualstr, nmutuals, idx):
+	starter = "<button class=\"btn btn-primary\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseExample" + str(idx) +"\"" 
+	starter += "aria-expanded=\"false\" aria-controls=\"collapseExample" + str(idx) + "\">"
+	starter += "See " + str(nmutuals) + " Mutuals"
+	starter += "</button></p>"
+	starter += "<div class=\"collapse\" id=\"collapseExample" + str(idx) + "\"><div class=\"card card-body\">"
+	starter += mutualstr + "</div>"
+	return starter
+
+	# starter = "<button type=\"button\" class=\"collapsible\">"
+	# mid = str(nmutuals) + " Mutuals </button><div class=\"content\">"
+	# end = "<p>" + mutualstr + "</p>"
+	# return starter + mid + end
 
 def get_followers(farcaster_address):
 	url = "https://api.farcaster.xyz/indexer/followers/"
@@ -46,7 +60,7 @@ def get_following(farcaster_address):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+	return render_template('404.html'), 404
 
 @app.route('/',methods=("GET","POST"))
 def hello():
@@ -60,7 +74,7 @@ def username_to_addy(name):
 	return requests.get("https://searchcaster.xyz/api/profiles?username="+name)
 
 def path_to_image_html(path):
-    return '<img src="'+ path + '" width="75" >'
+	return '<img src="'+ path + '" width="75" >'
 
 @app.route('/isfollowing/<user1>/<user2>')
 def isfollowing(user1, user2):
@@ -105,15 +119,20 @@ def imfeelinglucky(user1):
 		results.append(r)
 
 	resultsdf = pd.concat(results)
-	resultsdf['mutual'] = resultsdf.groupby(['username'])['mutual'].transform(lambda x : ','.join(x))
+	resultsdf['mutuals'] = resultsdf.groupby(['username'])['mutual'].transform(lambda x : '<br>'.join(x))
 	# weight more mutuals think you should meet more than that mutual
 	resultsdf['rankings'] = np.log(resultsdf['rankings']).groupby(resultsdf['username']).transform('sum')
+	resultsdf['nmutuals'] = resultsdf.groupby(['username'])['username'].transform('size')
+		
+	resultsdf = resultsdf[['mutuals','displayName', 'rankings','nmutuals','username','avatar.url']].drop_duplicates()
 
-	resultsdf = resultsdf.drop_duplicates()
 	resultsdf['image'] = [path_to_image_html(i) if i is not None else '' \
 										for i in resultsdf['avatar.url'] ] 
 
-	resultsdf = resultsdf[['username', 'displayName','image','rankings','mutual']]\
+	resultsdf['mutuals'] = [collapse(i,j, idx) if i is not None else '' 
+							for idx, (i,j) in enumerate(zip(resultsdf.mutuals, resultsdf.nmutuals))]
+
+	resultsdf = resultsdf[['username', 'displayName','image','rankings','mutuals']]\
 								.sort_values(by = ['rankings'], 
 									ascending=False)
 	# print(resultsdf.to_html())

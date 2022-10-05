@@ -10,24 +10,25 @@
               }
 div.container4 {
               height: 10em;
-              position: relative }
-          div.container4 p {
-              margin: 0;
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              margin-right: -50%;
-              transform: translate(-50%, -50%) }
-              html {
-                  display: table;
-                  margin: auto;
-              }
+              position: relative 
+}
+div.container4 p {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }
+    html {
+        display: table;
+        margin: auto;
+    }
 
-              body {
-                  display: table-cell;
-                  vertical-align: middle;
-              }
-    </style>
+    body {
+        display: table-cell;
+        vertical-align: middle;
+    }
+</style>
 {% endblock %}
 
 
@@ -35,11 +36,7 @@ div.container4 {
 Mutuals for 2 farcaster users
 {% endblock %}
 
-
 {% block content %}
-
-
-
 <div class="container4">
   <div class="header-flex">
   <img src = "https://searchcaster.xyz/_next/image?url=%2Fimg%2Flogo.png&w=48&q=75">
@@ -51,18 +48,14 @@ Mutuals for 2 farcaster users
     <input type="submit" value="Home" 
          name="Home" id="frm1_submit" />
 </form>
+</div>
 
   <div class="row">
     <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
-
       {{nmutuals | safe }} Mutuals
-      {{tables | safe}}
-
-      <p class="pt-5"><strong>{{ message }}</strong></p>
-
+        {{tables | safe}}
+      </div>
     </div>
-  </div>
-</div>
 
 {% endblock %}
 

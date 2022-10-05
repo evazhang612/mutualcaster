@@ -4,6 +4,7 @@
 {% block styles %}
 {{ super() }}
     <style>
+
         body { background: #e8f1f9; }
 
           p {
@@ -65,14 +66,11 @@ Mutuals for 2 farcaster users
       <li> Isfollowing checks for whether user1 is following user2.</li>
     </ul>
 
-<!--   <div class="row">
-    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
- -->
       {{ wtf.quick_form(form) }}
 
       <p class="pt-5"><strong>{{ message }}</strong></p>
-<!--   </div>
-</div> -->
+       <p class="pt-5"><strong>It may take a while for the I'm feeling lucky results to load. Do not fret.</strong></p>
+
 </div>
 
 {% endblock %}
