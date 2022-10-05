@@ -107,12 +107,12 @@ def imfeelinglucky(user1):
 	user1name = username_to_addy(user1).json()[0]['body']['address']
 	df1 = get_following(user1name)
 	results = []
-	moots = list(set(df1.address)-set(user1name))
+	moots = list(set(df1.address) - set(user1name))
 	for idx,i in enumerate(moots):
 		r = get_following(i)
 		if 'username' not in r.columns:
 			continue
-		rankings = len(set(r.username).intersection(set(moots)))
+		rankings = len(set(r.username).intersection(set(df1.username)) - set(user1))
 		r = r[~r['address'].isin(moots)][['username', 'displayName','avatar.url']]
 		r['mutual'] = df1.iloc[idx]['username']
 		r['rankings'] = rankings
