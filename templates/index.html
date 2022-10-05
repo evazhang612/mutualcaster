@@ -50,6 +50,12 @@ Mutuals for 2 farcaster users
 <h1>Farcaster Mutuals</h1></div>
 
     <ul>
+      <li> Leave user2 blank for I'm feeling lucky. 
+        I'm feeling lucky finds all the users user1 should follow
+      based on their existing following and mutuals. It's ranked by 
+      a log score of mutuals and their mutuals, weighting 
+      repeat mutuals more heavily than followers (modfied
+      version of pageRank). </li>
       <li>Mutuals find mutuals between user1 and user2. </li>
       <li>Intros check for who follows user2 that user1 also follows. In other
       words, people that can intro user1 to user2. </li>

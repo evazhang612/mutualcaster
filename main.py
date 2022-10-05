@@ -8,6 +8,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 import json
+import numpy as np
+import math
 from flask import render_template_string
 
 app = Flask(__name__)
@@ -16,13 +18,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'vfapafwo68'
 Bootstrap(app)
 
-OPTIONS = ['mutuals','intros','commonfollowing',\
-			 'aremutuals', 'isfollowing', 'peopletofollow',
-			 'stats']
+OPTIONS = ['imfeelinglucky', 'mutuals','intros','commonfollowing',\
+			 'aremutuals', 'isfollowing', 'peopletofollow']
 
 class MutualForm(FlaskForm):
     name1 = StringField('User 1?', validators=[DataRequired()])
-    name2 = StringField('User 2?', validators=[DataRequired()])
+    name2 = StringField('User 2?', validators=[])
     option = SelectField(label='Option', 
     			choices = OPTIONS, 
     			validators = [DataRequired()]) 
@@ -87,6 +88,41 @@ def aremutuals(user1, user2):
 		result = "nay!"
 	return render_template('yayornay.html', result=result)
 
+@app.route('/imfeelinglucky/<user1>')
+def imfeelinglucky(user1):
+	user1name = username_to_addy(user1).json()[0]['body']['address']
+	df1 = get_following(user1name)
+	results = []
+	moots = list(set(df1.address)-set(user1name))
+	for idx,i in enumerate(moots):
+		r = get_following(i)
+		if 'username' not in r.columns:
+			continue
+		rankings = len(set(r.username).intersection(set(df1.username)))
+		r = r[~r['address'].isin(moots)][['username', 'displayName','avatar.url']]
+		r['mutual'] = df1.iloc[idx]['username']
+		r['rankings'] = rankings
+		results.append(r)
+
+	resultsdf = pd.concat(results)
+	resultsdf['mutual'] = resultsdf.groupby(['username'])['mutual'].transform(lambda x : ','.join(x))
+	# weight more mutuals think you should meet more than that mutual
+	resultsdf['rankings'] = np.log(resultsdf['rankings']).groupby(resultsdf['username']).transform('sum')
+
+	resultsdf = resultsdf.drop_duplicates()
+	resultsdf['image'] = [path_to_image_html(i) if i is not None else '' \
+										for i in resultsdf['avatar.url'] ] 
+
+	resultsdf = resultsdf[['username', 'displayName','image','rankings','mutual']]\
+								.sort_values(by = ['rankings'], 
+									ascending=False)
+	# print(resultsdf.to_html())
+	return render_template('result.html',  
+				tables=resultsdf.to_html(justify= 'center', col_space='75px',
+					render_links=True,escape=False,index=False,
+					classes=["table-bordered"]),
+				nmutuals = resultsdf.shape[0]) 
+
 @app.route('/mutuals/<user1>/<user2>')
 def mutuals(user1, user2):
 		# return followers of user1 followed by user2
@@ -99,7 +135,8 @@ def mutuals(user1, user2):
 	print(df2)
 	moots = list(set(df1.username).intersection(set(df2.username)))
 	resultsdf = df1[df1['username'].isin(moots)]
-	resultsdf['image'] = [path_to_image_html(i) for i in resultsdf['avatar.url']] 
+	resultsdf['image'] = [path_to_image_html(i) if i is not None else '' \
+										for i in resultsdf['avatar.url'] ] 
 	resultsdf = resultsdf[['username', 'displayName','image']]
 	print(resultsdf.to_html())
 	return render_template('result.html',  
@@ -140,7 +177,8 @@ def intros(user1,user2):
 	df2 = get_followers(user2name)
 	moots = set(df1.username).intersection(set(df2.username))
 	resultsdf = df1[df1['username'].isin(moots)]
-	resultsdf['image'] = [path_to_image_html(i) for i in resultsdf['avatar.url']] 
+	resultsdf['image'] = [path_to_image_html(i) if i is not None else '' \
+										for i in resultsdf['avatar.url'] ] 
 	resultsdf = resultsdf[['username', 'displayName','image']]
 	return render_template('result.html',  
 				tables=resultsdf.to_html(
@@ -158,7 +196,8 @@ def commonfollowing(user1,user2):
 	df2 = get_following(user2name)
 	moots = set(df1.username).intersection(set(df2.username))
 	resultsdf = df1[df1['username'].isin(moots)]
-	resultsdf['image'] = [path_to_image_html(i) for i in resultsdf['avatar.url']] 
+	resultsdf['image'] = [path_to_image_html(i) if i is not None else '' \
+										for i in resultsdf['avatar.url'] ]  
 	resultsdf = resultsdf[['username', 'displayName','image']]
 	return render_template('result.html',  
 				tables=resultsdf.to_html(
