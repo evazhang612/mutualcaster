@@ -5,7 +5,35 @@
 {{ super() }}
     <style>
         body { background: #e8f1f9; }
-    </style>
+
+          p {
+            /* Center horizontally*/
+            text-align: center;
+          }
+          div.container4 {
+              height: 10em;
+              position: relative }
+          div.container4 p {
+              margin: 0;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              margin-right: -50%;
+              transform: translate(-50%, -50%) }
+              html, body {
+                height: 100%;
+              }
+
+              html {
+                  display: table;
+                  margin: auto;
+              }
+
+              body {
+                  display: table-cell;
+                  vertical-align: middle;
+              }
+              </style>
 {% endblock %}
 
 
@@ -17,32 +45,28 @@ Mutuals for 2 farcaster users
 {% block content %}
 
 
-<div class="container">
+<div class="container4">
 <img src = "https://searchcaster.xyz/_next/image?url=%2Fimg%2Flogo.png&w=48&q=75">
 <h1>Farcaster Mutuals</h1></div>
-  <div class="row">
-    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
-
-      <!-- <h1 class="pt-5 pb-2">Mutuals for farcaster</h1>
-      <img src="https://searchcaster.xyz/_next/image?url=%2Fimg%2Flogo.png&w=48&q=75">
- -->
-      <p class="lead">2 farcaster names</p>
 
     <ul>
       <li>Mutuals find mutuals between user1 and user2. </li>
       <li>Intros check for who follows user2 that user1 also follows. In other
       words, people that can intro user1 to user2. </li>
       <li>Common following finds people both user1 and user2 follow.</li>
+      <li> People to folow find users user1 follows that user2 doesn't.</li>
       <li> Aremutuals check for whether user1 and user2 followe each other.</li>
       <li> Isfollowing checks for whether user1 is following user2.</li>
     </ul>
 
+<!--   <div class="row">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+ -->
       {{ wtf.quick_form(form) }}
 
       <p class="pt-5"><strong>{{ message }}</strong></p>
-
-    </div>
-  </div>
+<!--   </div>
+</div> -->
 </div>
 
 {% endblock %}

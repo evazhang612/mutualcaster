@@ -116,8 +116,13 @@ def peopletofollow(user1, user2):
 	df1 = get_followers(user1name)
 	df2 = get_following(user2name)
 	moots = list(set(df1.username) - set(df2.username))
-	resultsdf = df1[df1['username'].isin(moots)]
-	resultsdf['image'] = [path_to_image_html(i) for i in resultsdf['avatar.url']] 
+	resultsdf = df1[df1['username'].isin(moots) & df1['username'] != user2]
+	print(resultsdf)
+	if resultsdf.shape[0] == 0:
+		return render_template('yayornay.html', result = "you followed everyone")
+
+	resultsdf['image'] = [path_to_image_html(i) if i is not None else '' \
+										for i in resultsdf['avatar.url'] ] 
 	resultsdf = resultsdf[['username', 'displayName','image']]
 	print(resultsdf.to_html())
 	return render_template('result.html',  
