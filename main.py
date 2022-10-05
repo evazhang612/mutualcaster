@@ -112,7 +112,7 @@ def imfeelinglucky(user1):
 		r = get_following(i)
 		if 'username' not in r.columns:
 			continue
-		rankings = len(set(r.username).intersection(set(df1.username)))
+		rankings = len(set(r.username).intersection(set(moots)))
 		r = r[~r['address'].isin(moots)][['username', 'displayName','avatar.url']]
 		r['mutual'] = df1.iloc[idx]['username']
 		r['rankings'] = rankings
